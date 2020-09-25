@@ -1,0 +1,71 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "scalyr-k8snode-manager.fullname" . }}
+  labels:
+    {{- include "scalyr-k8snode-manager.labels" . | nindent 4 }}
+spec:
+  jobTemplate:
+    metadata:
+      name: {{ include "scalyr-k8snode-manager.fullname" . }}
+      labels:
+        {{- include "scalyr-k8snode-manager.labels" . | nindent 8 }}
+    spec:
+      template:
+        metadata:
+          name: {{ include "scalyr-k8snode-manager.fullname" . }}
+          labels:
+            {{- include "scalyr-k8snode-manager.labels" . | nindent 12 }}
+        spec:
+          volumes:
+            - name: sshkey
+              secret:
+                secretName: {{ include "scalyr-k8snode-manager.fullname" . }}
+            - name: config
+              configMap:
+                name: "{{ include "scalyr-k8snode-manager.fullname" . }}"
+          serviceAccountName: {{ include "scalyr-k8snode-manager.serviceAccountName" . }}
+          automountServiceAccountToken: true
+          restartPolicy: "{{.Values.restartPolicy }}"
+          containers:
+            - name: "{{ .Chart.Name }}"
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              env:
+                - name: SSH_KEY_PATH
+                  value: "/etc/ssh-client/key"
+                - name: SSH_PASSPHRASE
+                  value: "{{ .Values.config.sshPassPhrase }}"
+                - name: SSH_USER
+                  value: "{{ .Values.config.sshUser }}"
+                - name: SCALYR_APIKEY
+                  value: "{{ .Values.config.scalyr.apiKey }}"
+                - name: SCALYR_SERVER
+                  value: "{{ .Values.config.scalyr.server }}"
+                - name: "SCALYR_CONFIG_PATH"
+                  value: "/etc/scalyr-config"
+                {{- with .Values.config.env }}
+                {{- toYaml . | nindent 16 }}
+                {{- end}}
+              volumeMounts:
+                - mountPath: /etc/ssh-client
+                  name: sshkey
+                - mountPath: /etc/scalyr-config
+                  name: config
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+  schedule: "{{ .Values.config.cronSchedule }}"

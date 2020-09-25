@@ -1,0 +1,6 @@
+apiVersion: v2
+name: scalyr-k8snode-manager
+description: A Helm chart for the Scalyr k8snode manager
+type: application
+version: 0.1.0
+appVersion: latest

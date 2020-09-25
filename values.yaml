@@ -1,0 +1,84 @@
+# Default values for scalyr-k8snode-manager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: dodevops/scalyr-k8snode-manager
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+restartPolicy: "OnFailure"
+
+config:
+  # config.cronSchedule -- Schedule to use for the CronJob
+  cronSchedule: "0 0 * * *"
+  # config.sshKey -- SSH private key data to use
+  sshKey: ""
+  # config.sshPassPhrase -- SSH passphrase for the key
+  sshPassPhrase: ""
+  # config.sshUser -- User to use when connecting to the node
+  sshUser: ""
+  # config.env -- Additional environment variables to set in the PodSpec Env-form
+  # (list of objects with name and value keys)
+  env: []
+  scalyr:
+    # config.scalyr.server -- The Scalyr server to send logs to
+    server: "scalyr.com"
+    # config.scalyr.apiKey -- The Scalyr API key to use
+    apiKey: ""
+    # config.scalyr.version -- Version of Scalyr to use
+    version: ""
+    # config.scalyr.config -- A hash of configuration files and their content as documented in the
+    # [Scalyr agent configmap configuration documentation](https://app.scalyr.com/help/scalyr-agent-k8s#modify-config)
+    config: {}
+    # config.scalyr.base64Config -- As Helm is currently
+    # [unable to correctly pass JSON strings](https://github.com/helm/helm/issues/5618), this can be set to true so
+    # all values of scalyr.config are expected to be base64 encoded and will be decoded in the chart
+    base64Config: true
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
