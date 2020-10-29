@@ -10,6 +10,7 @@
 # SSH_KEY_PATH=<Path to the ssh private key>
 # SSH_PASSPHRASE=<Passphrase of the SSH key>
 # SSH_USER=<Username to use for connecting to the node>
+# SFTP_SERVER=Path to the sftp-server executable on the node [/usr/libexec/openssh/sftp-server]
 #
 # The nodes will be accessed using SSH, so a valid SSH private key should be mounted into the
 # container.
@@ -63,7 +64,7 @@ do
       exit 1
     fi
     echo "Uploading configuration ${CONFIGFILE}"
-    if ! OUTPUT=$(echo "put \"${TEMPDIR}/${CONFIGFILE}\" /etc/scalyr-agent-2/agent.d" | setsid sftp -s 'sudo -u root /usr/libexec/openssh/sftp-server' "${NODE}")
+    if ! OUTPUT=$(echo "put \"${TEMPDIR}/${CONFIGFILE}\" /etc/scalyr-agent-2/agent.d" | setsid sftp -s "sudo -u root ${SFTP_SERVER:-/usr/libexec/openssh/sftp-server}" "${NODE}")
     then
       echo -e "Can't copy configuration:\n ${OUTPUT}"
       exit 1
