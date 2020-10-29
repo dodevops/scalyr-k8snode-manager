@@ -46,6 +46,8 @@ spec:
                   value: "{{ .Values.config.scalyr.server }}"
                 - name: "SCALYR_CONFIG_PATH"
                   value: "/etc/scalyr-config"
+                - name: "SFTP_SERVER"
+                  value: "{{ .Values.config.sftpServer }}"
                 {{- with .Values.config.env }}
                 {{- toYaml . | nindent 16 }}
                 {{- end}}
