@@ -1,6 +1,6 @@
 # scalyr-k8snode-manager
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/scalyr-k8snode-manager)](https://artifacthub.io/packages/search?repo=scalyr-k8snode-manager) ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: latest](https://img.shields.io/badge/AppVersion-latest-informational?style=flat-square)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/scalyr-k8snode-manager)](https://artifacthub.io/packages/search?repo=scalyr-k8snode-manager) ![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: latest](https://img.shields.io/badge/AppVersion-latest-informational?style=flat-square)
 
 ## Introduction
 
@@ -49,6 +49,7 @@ for each monitor.
 | config.scalyr.config | object | `{}` | A hash of configuration files and their content as documented in the [Scalyr agent configmap configuration documentation](https://app.scalyr.com/help/scalyr-agent-k8s#modify-config) |
 | config.scalyr.server | string | `"scalyr.com"` | The Scalyr server to send logs to |
 | config.scalyr.version | string | `""` | Version of Scalyr to use |
+| config.sftpServer | string | `"/usr/libexec/openssh/sftp-server"` | Path to the SFTP-Server binary on the node |
 | config.sshKey | string | `""` | SSH private key data to use |
 | config.sshPassPhrase | string | `""` | SSH passphrase for the key |
 | config.sshUser | string | `""` | User to use when connecting to the node |

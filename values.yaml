@@ -21,6 +21,8 @@ config:
   sshPassPhrase: ""
   # config.sshUser -- User to use when connecting to the node
   sshUser: ""
+  # config.sftpServer -- Path to the SFTP-Server binary on the node
+  sftpServer: "/usr/libexec/openssh/sftp-server"
   # config.env -- Additional environment variables to set in the PodSpec Env-form
   # (list of objects with name and value keys)
   env: []
