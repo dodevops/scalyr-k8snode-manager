@@ -36,18 +36,17 @@ setsid ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
 
 echo -e "Host *\n  User ${SSH_USER}\n  UserKnownHostsFile=/dev/null\n  StrictHostKeyChecking=no\n" > /root/.ssh/config;
 
-
 for NODE in $(kubectl get nodes -o custom-columns=name:metadata.name --no-headers)
 do
   echo "Managing node ${NODE}"
   echo "Downloading Scalyr agent installer"
-  if ! OUTPUT=$(setsid ssh "${NODE}" -- "sudo curl -sO https://www.scalyr.com/install-agent.sh")
+  if ! OUTPUT=$(setsid ssh "${NODE}" -- "sudo curl -sO https://www.scalyr.com/install-agent.sh" 2>&1)
   then
     echo -e "Can't download Scalyr installer:\n ${OUTPUT}"
     exit 1
   fi
   echo "Installing Scalyr"
-  if ! OUTPUT=$(setsid ssh "${NODE}" -- "sudo bash install-agent.sh --set-api-key '${SCALYR_APIKEY}' --version '${SCALYR_VERSION}' --set-scalyr-server '${SCALYR_SERVER}'")
+  if ! OUTPUT=$(setsid ssh "${NODE}" -- "sudo bash install-agent.sh --set-api-key '${SCALYR_APIKEY}' --version '${SCALYR_VERSION}' --set-scalyr-server '${SCALYR_SERVER}'" 2>&1)
   then
     echo -e "Can't install Scalyr:\n ${OUTPUT}"
     exit 1
@@ -64,7 +63,7 @@ do
       exit 1
     fi
     echo "Uploading configuration ${CONFIGFILE}"
-    if ! OUTPUT=$(echo "put \"${TEMPDIR}/${CONFIGFILE}\" /etc/scalyr-agent-2/agent.d" | setsid sftp -s "sudo -u root ${SFTP_SERVER:-/usr/libexec/openssh/sftp-server}" "${NODE}")
+    if ! OUTPUT=$(echo "put \"${TEMPDIR}/${CONFIGFILE}\" /etc/scalyr-agent-2/agent.d" | setsid sftp -s "sudo -u root ${SFTP_SERVER:-/usr/libexec/openssh/sftp-server}" "${NODE}" 2>&1)
     then
       echo -e "Can't copy configuration:\n ${OUTPUT}"
       exit 1
@@ -72,7 +71,7 @@ do
   done
   rm -rf "${TEMPDIR}"
   echo "Starting Scalyr Agent"
-  if ! OUTPUT=$(setsid ssh "${NODE}" -- "sudo systemctl restart scalyr-agent-2")
+  if ! OUTPUT=$(setsid ssh "${NODE}" -- "sudo systemctl restart scalyr-agent-2" 2>&1)
   then
     echo -e "Can't start scalyr agent:\n ${OUTPUT}"
     exit 1
