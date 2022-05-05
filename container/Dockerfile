@@ -8,9 +8,9 @@ RUN apk add openssh bash curl; \
     chmod +x /usr/local/bin/mo; \
     curl -s -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl; \
     chmod +x ./kubectl; \
-    mv kubectl /usr/local/bin \
-    curl -LO https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell \
-    chmod +x ./kubectl-node_shell \
-    sudo mv ./kubectl-node_shell /usr/local/bin/kubectl-node_shell
+    mv kubectl /usr/local/bin; \
+    curl -s -LO https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell; \
+    chmod +x kubectl-node_shell; \
+    mv kubectl-node_shell /usr/local/bin/kubectl-node_shell
 
 ENTRYPOINT /manage.sh
