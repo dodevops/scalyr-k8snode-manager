@@ -15,13 +15,15 @@ restartPolicy: "OnFailure"
 config:
   # config.cronSchedule -- Schedule to use for the CronJob
   cronSchedule: "0 0 * * *"
-  # config.sshKey -- SSH private key data to use
+  # config.method -- Use nsenter (via kubectl node-shell) or ssh to get access to the node
+  method: "nsenter"
+  # config.sshKey -- SSH private key data to use (only for config.method = ssh)
   sshKey: ""
-  # config.sshPassPhrase -- SSH passphrase for the key
+  # config.sshPassPhrase -- SSH passphrase for the key (only for config.method = ssh)
   sshPassPhrase: ""
-  # config.sshUser -- User to use when connecting to the node
+  # config.sshUser -- User to use when connecting to the node (only for config.method = ssh)
   sshUser: ""
-  # config.sftpServer -- Path to the SFTP-Server binary on the node
+  # config.sftpServer -- Path to the SFTP-Server binary on the node (only for config.method = ssh)
   sftpServer: "/usr/libexec/openssh/sftp-server"
   # config.env -- Additional environment variables to set in the PodSpec Env-form
   # (list of objects with name and value keys)

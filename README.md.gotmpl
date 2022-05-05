@@ -23,10 +23,13 @@ to install this chart.
 
 Theses basic configuration keys have to be set up for managing Scalyr agents on the Kubernetes nodes:
 
+* config.method: Use nsenter (via kubectl node-shell) or ssh to get access to the node [nsenter]
 * config.sshKey: The private key data of the SSH key used to connect to the Kubernetes nodes. Be sure that the
-    public part of that keypair is allowed to connect to the node.
+    public part of that keypair is allowed to connect to the node. (only for config.method = ssh)
 * config.sshPassPhrase: The passphrase of the private key used to connect to the Kubernetes nodes.
+    (only for config.method = ssh)
 * config.sshUser: The remote user connecting to the Kubernetes nodes (e.g. ec2-user on EKS managed nodegroups)
+    (only for config.method = ssh)
 * env: Additional environment variables (useful for templating; see below)
 * config.scalyr.server: The name of the Scalyr api server (defaults to scalyr.com)
 * config.scalyr.apiKey: The api key used to authenticate to the Scalyr api server
