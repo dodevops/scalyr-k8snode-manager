@@ -5,6 +5,9 @@ on:
     paths:
       - "helm-charts/**/*"
       - ".github/**/*"
+  release:
+    types:
+      - published
 
 jobs:
   build-and-push-chart:

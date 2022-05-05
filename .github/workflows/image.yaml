@@ -5,6 +5,9 @@ on:
     paths:
       - "container/*"
       - ".github/**/*"
+  release:
+    types:
+      - published
 
 env:
   REGISTRY: ghcr.io
