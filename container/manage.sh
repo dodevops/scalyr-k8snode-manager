@@ -91,7 +91,7 @@ do
         exit 1
       fi
     else
-      if ! OUTPUT=$(kubectl node-shell "${NODE}" -- cat > "/etc/scalyr-agent-2/agent.d/${CONFIGFILE}" <"${TEMPDIR}/${CONFIGFILE}" 2>&1)
+      if ! OUTPUT=$(kubectl node-shell "${NODE}" -- sh -c "cat > /etc/scalyr-agent-2/agent.d/${CONFIGFILE}" <"${TEMPDIR}/${CONFIGFILE}" 2>&1)
       then
         echo -e "Can't copy configuration:\n ${OUTPUT}"
         exit 1
