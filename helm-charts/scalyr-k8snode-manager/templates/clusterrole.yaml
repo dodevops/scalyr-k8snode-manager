@@ -17,8 +17,10 @@ rules:
       - delete
       - list
       - get
+      - watch
     resources:
       - pods
       - pods/attach
+      - pods/log
     apiGroups:
       - ""
