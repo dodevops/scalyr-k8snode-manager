@@ -50,6 +50,8 @@ spec:
                   value: "/etc/scalyr-config"
                 - name: "SFTP_SERVER"
                   value: "{{ .Values.config.sftpServer }}"
+                - name: "USE_SUDO"
+                  value: "{{ .Values.config.useSudo }}"
                 {{- with .Values.config.env }}
                 {{- toYaml . | nindent 16 }}
                 {{- end}}

@@ -12,6 +12,7 @@
 # SSH_PASSPHRASE=<Passphrase of the SSH key>
 # SSH_USER=<Username to use for connecting to the node>
 # SFTP_SERVER=Path to the sftp-server executable on the node [/usr/libexec/openssh/sftp-server]
+# USE_SUDO=true/false Whether to use sudo on the commands
 #
 # If the nodes will be accessed using SSH, a valid SSH private key should be mounted into the
 # container.
@@ -48,17 +49,24 @@ else
   kubectl config use-context local
 fi
 
+SUDO_COMMAND=""
+
+if [[ "X${USE_SUDO}X" == "XtrueX" ]]
+then
+  SUDO_COMMAND="sudo "
+fi
+
 for NODE in $(kubectl get nodes -o custom-columns=name:metadata.name --no-headers)
 do
   echo "Managing node ${NODE}"
   echo "Downloading Scalyr agent installer"
-  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "curl -sO https://www.scalyr.com/install-agent.sh" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}curl -sO https://www.scalyr.com/install-agent.sh" 2>&1)
   then
     echo -e "Can't download Scalyr installer:\n ${OUTPUT}"
     exit 1
   fi
   echo "Installing Scalyr"
-  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "bash install-agent.sh --set-api-key '${SCALYR_APIKEY}' --version '${SCALYR_VERSION}' --set-scalyr-server '${SCALYR_SERVER}'" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}bash install-agent.sh --set-api-key '${SCALYR_APIKEY}' --version '${SCALYR_VERSION}' --set-scalyr-server '${SCALYR_SERVER}'" 2>&1)
   then
     echo -e "Can't install Scalyr:\n ${OUTPUT}"
     exit 1
@@ -77,7 +85,7 @@ do
     echo "Uploading configuration ${CONFIGFILE}"
     if [[ "X${METHOD}X" == "XsshX" ]]
     then
-      if ! OUTPUT=$(echo "put \"${TEMPDIR}/${CONFIGFILE}\" /etc/scalyr-agent-2/agent.d" | setsid sftp -s "${SFTP_SERVER:-/usr/libexec/openssh/sftp-server}" "${NODE}" 2>&1)
+      if ! OUTPUT=$(echo "put \"${TEMPDIR}/${CONFIGFILE}\" /etc/scalyr-agent-2/agent.d" | setsid sftp -s "${SUDO_COMMAND}${SFTP_SERVER:-/usr/libexec/openssh/sftp-server}" "${NODE}" 2>&1)
       then
         echo -e "Can't copy configuration:\n ${OUTPUT}"
         exit 1
@@ -92,7 +100,7 @@ do
   done
   rm -rf "${TEMPDIR}"
   echo "Starting Scalyr Agent"
-  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "systemctl restart scalyr-agent-2" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}systemctl restart scalyr-agent-2" 2>&1)
   then
     echo -e "Can't start scalyr agent:\n ${OUTPUT}"
     exit 1
