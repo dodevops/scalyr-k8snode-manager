@@ -20,10 +20,10 @@
 # environment variables will be available as a template context.
 # Additionally, the environment variable "NODE" contains the current node
 
-COMMAND="kubectl node-shell"
+COMMAND=("kubectl" "node-shell")
 if [[ "X${METHOD}X" == "XsshX" ]]
 then
-  COMMAND="setsid ssh"
+  COMMAND=("setsid" "ssh")
   rm -rf ~/.ssh &>/dev/null
   mkdir ~/.ssh
   chmod 0700 ~/.ssh
@@ -46,13 +46,13 @@ for NODE in $(kubectl get nodes -o custom-columns=name:metadata.name --no-header
 do
   echo "Managing node ${NODE}"
   echo "Downloading Scalyr agent installer"
-  if ! OUTPUT=$("${COMMAND}" "${NODE}" -- "sudo curl -sO https://www.scalyr.com/install-agent.sh" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "sudo curl -sO https://www.scalyr.com/install-agent.sh" 2>&1)
   then
     echo -e "Can't download Scalyr installer:\n ${OUTPUT}"
     exit 1
   fi
   echo "Installing Scalyr"
-  if ! OUTPUT=$("${COMMAND}" "${NODE}" -- "sudo bash install-agent.sh --set-api-key '${SCALYR_APIKEY}' --version '${SCALYR_VERSION}' --set-scalyr-server '${SCALYR_SERVER}'" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "sudo bash install-agent.sh --set-api-key '${SCALYR_APIKEY}' --version '${SCALYR_VERSION}' --set-scalyr-server '${SCALYR_SERVER}'" 2>&1)
   then
     echo -e "Can't install Scalyr:\n ${OUTPUT}"
     exit 1
@@ -86,7 +86,7 @@ do
   done
   rm -rf "${TEMPDIR}"
   echo "Starting Scalyr Agent"
-  if ! OUTPUT=$("${COMMAND}" "${NODE}" -- "sudo systemctl restart scalyr-agent-2" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "sudo systemctl restart scalyr-agent-2" 2>&1)
   then
     echo -e "Can't start scalyr agent:\n ${OUTPUT}"
     exit 1
