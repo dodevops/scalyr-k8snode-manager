@@ -60,13 +60,13 @@ for NODE in $(kubectl get nodes -o custom-columns=name:metadata.name --no-header
 do
   echo "Managing node ${NODE}"
   echo "Downloading Scalyr agent installer"
-  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}curl -sO https://www.scalyr.com/install-agent.sh" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}"curl -sO https://www.scalyr.com/install-agent.sh 2>&1)
   then
     echo -e "Can't download Scalyr installer:\n ${OUTPUT}"
     exit 1
   fi
   echo "Installing Scalyr"
-  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}bash install-agent.sh --set-api-key '${SCALYR_APIKEY}' --version '${SCALYR_VERSION}' --set-scalyr-server '${SCALYR_SERVER}'" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}"bash install-agent.sh --set-api-key "${SCALYR_APIKEY}" --version "${SCALYR_VERSION}" --set-scalyr-server "${SCALYR_SERVER}" 2>&1)
   then
     echo -e "Can't install Scalyr:\n ${OUTPUT}"
     exit 1
@@ -91,7 +91,7 @@ do
         exit 1
       fi
     else
-      if ! OUTPUT=$(kubectl node-shell "${NODE}" -- sh -c 'cat > /etc/scalyr-agent-2/agent.d' <"${TEMPDIR}/${CONFIGFILE}" 2>&1)
+      if ! OUTPUT=$(kubectl node-shell "${NODE}" -- cat > /etc/scalyr-agent-2/agent.d <"${TEMPDIR}/${CONFIGFILE}" 2>&1)
       then
         echo -e "Can't copy configuration:\n ${OUTPUT}"
         exit 1
@@ -100,7 +100,7 @@ do
   done
   rm -rf "${TEMPDIR}"
   echo "Starting Scalyr Agent"
-  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}systemctl restart scalyr-agent-2" 2>&1)
+  if ! OUTPUT=$("${COMMAND[@]}" "${NODE}" -- "${SUDO_COMMAND}"systemctl restart scalyr-agent-2 2>&1)
   then
     echo -e "Can't start scalyr agent:\n ${OUTPUT}"
     exit 1
