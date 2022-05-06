@@ -7,8 +7,18 @@ metadata:
 rules:
   - verbs:
       - list
+      - get
     resources:
       - nodes
     apiGroups:
       - ""
-
+  - verbs:
+      - create
+      - delete
+      - list
+      - get
+    resources:
+      - pods
+      - pods/attach
+    apiGroups:
+      - ""

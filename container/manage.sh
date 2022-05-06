@@ -40,6 +40,12 @@ then
   setsid ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
 
   echo -e "Host *\n  User ${SSH_USER}\n  UserKnownHostsFile=/dev/null\n  StrictHostKeyChecking=no\n" > /root/.ssh/config;
+else
+  # Create context for kubectl node-shell
+  kubectl config set-cluster cluster --server="https://${KUBERNETES_SERVICE_HOST}" --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  kubectl config set-credentials serviceaccount --token="$(cat /run/secrets/kubernetes.io/serviceaccount/token)"
+  kubectl config set-context local --cluster=cluster --namespace=default --user=serviceaccount
+  kubectl config use-context local
 fi
 
 for NODE in $(kubectl get nodes -o custom-columns=name:metadata.name --no-headers)
