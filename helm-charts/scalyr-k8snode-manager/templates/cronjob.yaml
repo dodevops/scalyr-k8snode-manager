@@ -1,4 +1,8 @@
+{{- if .Capabilities.APIVersions.Has "batch/v1beta1/Cronjob" }}
 apiVersion: batch/v1beta1
+{{- else }}
+apiVersion: batch/v1
+{{- end }}
 kind: CronJob
 metadata:
   name: {{ include "scalyr-k8snode-manager.fullname" . }}
