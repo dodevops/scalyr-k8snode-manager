@@ -3,6 +3,16 @@ entries:
   scalyr-k8snode-manager:
   - apiVersion: v2
     appVersion: latest
+    created: "2023-06-09T05:53:37.193432148Z"
+    description: A Helm chart for the Scalyr k8snode manager
+    digest: 1f1f44470e2c76866572de3fa3b68adadf1f5576c89010ccd22f028cfeee45ee
+    name: scalyr-k8snode-manager
+    type: application
+    urls:
+    - https://github.com/dodevops/scalyr-k8snode-manager/releases/download/scalyr-k8snode-manager-0.1.7/scalyr-k8snode-manager-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    appVersion: latest
     created: "2022-05-06T09:39:18.985195388Z"
     description: A Helm chart for the Scalyr k8snode manager
     digest: 748cf034ba2e2386fdbfb4d4a3525a0570cb851f7097be672b5fbd1c1919b165
@@ -71,4 +81,4 @@ entries:
     urls:
     - https://dodevops.github.io/scalyr-k8snode-manager/scalyr-k8snode-manager-0.1.0.tgz
     version: 0.1.0
-generated: "2022-05-06T09:39:18.985220088Z"
+generated: "2023-06-09T05:53:37.19346145Z"
